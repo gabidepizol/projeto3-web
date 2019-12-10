@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, user-scalable=no">
+  <link rel="stylesheet" type="text/css" href="css/style.css" />
+  <link rel="icon" type="imagem/png" href="img/globoesporte.ico" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <title>globoesporte.com</title>
+</head>
+<body>
+
+  <header class="general-padding">
+    <ul class="globo-links">
+      <li><a href="https://www.globo.com/" class="bold globo"> globo.com</a></li>
+      <li><a href="https://g1.globo.com/" class="bold g1">g1</a></li>
+      <li><a href="https://globoesporte.globo.com/" class="bold ge">globoesporte</a></li>
+      <li><a href="https://gshow.globo.com/" class="bold gshow">gshow</a></li>
+      <li><a href="https://globoplay.globo.com/" class="bold globo">vídeos</a></li>
+    </ul>
+    <div class="links-wrap">
+      <a href="#" class="links-header">MINHA CONTA</a>
+      <button type="button" onClick="addNew()"> Nova Noticia</a></button>
+      <script type="text/javascript">
+      function logout() {
+        location.href="/logout"
+      }
+      function search(e) {
+        if (event.key === 'Enter') {
+          location.href="/buscar?titulo=" + e.value
+        }
+      }
+      function addNew() {
+        location.href="/nova"
+      }
+      </script>
+
+      <button type="button" onClick="logout()">SAIR</button>
+    </div>
+  </header>
+
+  <div class="menu-wrap  general-padding">
+    <img  src="img/menu-button.png" class="menu-icon" alt="">
+    <p class="vertical-align menu-link">MENU</p>
+    <p class="vertical-align responsive">TIMES</p>
+    <a class="vertical-align">globoesporte.com</a>
+    <input type="text" name="search" id="search" class="vertical-align responsive" value="" placeholder="BUSCAR"></input>
+  </div>
+
+  <section class="premiere-play general-padding">
+    <div class="float-left">
+      <img src="img/logo-premiere-play.svg" />
+    </div>
+    <p class="float-left">É hora do jogo! Jogos ao vivo e exclusivos do Brasileirão.</p>
+    <a href="#">Assine e assista</a>
+  </section>
+  <section class="image-wrap" id="conteudo">
+    {{#each this}}
+    <div class="telatoda">
+      <div class="other-images">
+        <div>
+          <img src="/GloboEsporte-master/public/upload/{{imagem}}" />
+        </div>
+      </div>
+      <div class="texto">
+        <p>{{titulo}}</p>
+      </div>
+    </div>
+    {{/each}}
+  </section>
+
+  <script type="text/javascript" charset="utf-8">
+
+          var conteudo = document.querySelector("#conteudo");
+ 			    var search = document.querySelector("#search");
+			    var carregando = '<center><img src="img/loading.svg"/></center>';
+
+          function JSONtoHTML_conteudo(json_conteudo)
+			    {
+				    var html_conteudo = "";
+				    for (var i in json_conteudo) {
+				    html_conteudo += '<div class="post"> \
+                                    <p>' + json_conteudo[i].titulo + '</p> \
+                                </div>';
+				    }
+				    return html_conteudo;
+			    }
+
+			    setInterval(function(){
+				    if (search.value == "")
+				    {
+					    conteudo.innerHTML = carregando;
+					    var xmlhttp = new XMLHttpRequest();
+					    xmlhttp.open("GET", "conteudo", true);
+					    xmlhttp.onreadystatechange = function() {
+						    if (xmlhttp.readyState === 4 && xmlhttp.status === 200)
+						    {	
+							    conteudo.innerHTML = JSONtoHTML_conteudo(JSON.parse(xmlhttp.responseText));
+						    }
+					    };
+					xmlhttp.send();
+				    }   
+			    }, 10000);
+/*
+          search.addEventListener("keyup", function live_search() {
+				    conteudo.innerHTML = carregando;
+				    var xmlhttp = new XMLHttpRequest();
+				    xmlhttp.open("POST", "pesquisar", true);
+				    xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+				    xmlhttp.onreadystatechange = function() {
+					    if (xmlhttp.readyState === 4 && xmlhttp.status === 200)
+					    {	
+						    conteudo.innerHTML = JSONtoHTML_conteudo(JSON.parse(xmlhttp.responseText));
+					    }
+				    };
+				    xmlhttp.send("search=" + search.value);
+			    });*/
+    </script>
+
+</body>
+</html>

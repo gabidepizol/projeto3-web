@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+  <link rel="stylesheet" type="text/css" href="css/style1.css" />
+
+  <style>
+    .progress-bar{
+      height: 35px;
+      width: 250px;
+      border: 2px solid darkblue;
+    }
+
+    .progress-bar-fill{
+      height: 100%;
+      width: 5%;
+      background: lightblue;
+      display: flex;
+      align-items: center;
+      transition: width 0.25s;
+    }
+
+    .progress-bar-text{
+      margin-left: 10px;
+      font-weight: bold;
+    } 
+  </style>
+
+</head>
+<body>
+  <div class="container" >
+    <div class="content">      
+      <!--FORMULÁRIO DE LOGIN-->
+      <div id="login">
+
+        <form id="uploadForm" method="post" action="/noticias/" enctype="multipart/form-data"> 
+          <h1>Nova noticia</h1> 
+          <p> 
+            <label for="titulo">Titulo</label>
+            <input id="titulo" name="titulo" required="required" type="text" placeholder="ex. Palmeiras ganha mundial"/>
+          </p>
+           
+          <p> 
+            <label for="imagem">Imagem</label>
+            <input id="imagem" name="imagem" type="file" /> 
+          </p>
+          <p> 
+            <input type="submit" value="Salvar" /> 
+          </p>
+
+          <div class="progress-bar" id="progress-bar">
+              <div class="progress-bar-fill">
+                <span class="progress-bar-text">0%</span>
+              </div>
+
+          </div>
+           
+        </form>
+      </div>
+ 
+     
+      <script>
+        const uploadForm = document.getElementById("uploadForm");
+        const imagem = document.getElementById("imagem");
+        const progressBarFill = document.querySelector("#progress-bar > .progress-bar-fill");
+        const progressBarText = progressBarFill.querySelector(".progress-bar-text");
+        var url = "http://localhost:5000/nova";
+
+        uploadForm.addEventListener("submit", uploadFile);
+
+        function uploadFile (e) {
+          e.preventDefaut();
+
+          const xhr = new XMLHttpRequest();
+
+          xhr.open("POST", url, true);
+          xhr.upload.addEventListener("progress", e => {
+            const percent = e.lengthComputable ? (e.loaded / e.total) * 100 : 0;
+
+            progressBarFill.style.width = percent.toFixed(2) + "%";
+            progressBarText.textContent = percent.toFixed(2) + "%";
+            
+          });
+
+          xhr.setRequestHeader("Content-Type", "multipart/form-data");
+          xhr.send(new FormData(uploadForm));
+
+        }
+
+      </script>
+
+
+    </div>
+  </div>  
+</body>
+</html>
